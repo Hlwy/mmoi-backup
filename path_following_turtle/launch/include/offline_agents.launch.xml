@@ -1,0 +1,47 @@
+<launch>
+  <arg name="bot1_name" default="name_check1"/>
+  <arg name="bot2_name" default="name_check2"/>
+  <arg name="use_2_agents" default="false"/>
+  <arg name="spawn_model" default="false" />
+
+  <!--  Agent 1 -->
+  <arg name="x1" default="0.0" />
+  <arg name="y1" default="1.0" />
+  <!--  Agent 2 -->
+  <arg name="x2" default="0.0" />
+  <arg name="y2" default="-1.0" />
+
+  <!--    Start Up Agent 1  -->
+  <include file="$(find path_following_turtle)/launch/include/kobuki_offline.launch.xml">
+    <arg name="robot_name" value="$(arg bot1_name)" />
+    <arg name="spawn_model" value="$(arg spawn_model)" />
+    <arg name="robot_position" value="-x $(arg x1) -y $(arg y1)" />
+  </include>
+
+  <!-- Retrieve Gazebo states for agents -->
+  <node name="agent1_state_pubber"
+        pkg="path_following_turtle"
+        type="agent1_state_server"
+        respawn="true" >
+        <!-- output="screen" > -->
+  </node>
+
+  <!--    Start Up Agent 2   -->
+  <group if="$(arg use_2_agents)">
+    <include file="$(find path_following_turtle)/launch/include/kobuki_offline.launch.xml">
+      <arg name="robot_name" value="$(arg bot2_name)" />
+      <arg name="spawn_model" value="$(arg spawn_model)" />
+      <arg name="robot_position" value="-x $(arg x2) -y $(arg y2)" />
+    </include>
+
+    <node name="agent2_state_pubber"
+          pkg="path_following_turtle"
+          type="agent2_state_server"
+          respawn="true" >
+          <!-- output="screen" > -->
+    </node>
+
+  </group>
+
+
+</launch>

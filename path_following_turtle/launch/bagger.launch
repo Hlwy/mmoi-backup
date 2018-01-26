@@ -1,0 +1,32 @@
+<launch>
+  <arg name="create_bag" default="true"/>
+
+  <!-- <arg name="savefile" default="/home/hunter/catkin_ws/src/path_following_turtle/bags/iSAM2_TEST_1.bag" /> -->
+  <arg name="savefile" default="$(find path_following_turtle)/bags/rviz_TEST_2.bag" />
+  <arg name="bag_topics"
+    value="
+    /clock
+    /gazebo/model_states
+    /pose1_pubber
+    /pose2_pubber
+    /tf
+    /tf_static
+
+    /agent1/odom
+    /agent1/mobile_base/commands/velocity
+
+    /agent2/odom
+    /agent2/mobile_base/commands/velocity
+
+    /bot1_stamped_cmds
+    /bot2_stamped_cmds"
+
+  />
+
+  <node pkg="rosbag" type="record" name="rosbagger"
+        args="record -o $(arg savefile) $(arg bag_topics)"
+        if="$(arg create_bag)"
+  />
+
+
+</launch>

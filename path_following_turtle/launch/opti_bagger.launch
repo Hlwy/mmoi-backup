@@ -1,0 +1,40 @@
+<launch>
+  <arg name="create_bag" default="true"/>
+
+  <!-- <arg name="savefile" default="/home/hunter/catkin_ws/src/path_following_turtle/bags/iSAM2_TEST_1.bag" /> -->
+  <arg name="savefile" default="$(find path_following_turtle)/bags/OPTITRACK_LINES.bag" />
+  <arg name="bag_topics"
+    value="
+    /clock
+    /bot1/pose
+    /bot2/pose
+    /tf
+    /tf_static
+
+    /agent1/odom
+    /agent1/robot_pose_ekf/odom_combined
+    /agent1/mobile_base/commands/velocity
+    /agent1/mobile_base/sensors/imu_data
+
+    /agent2/odom
+    /agent2/robot_pose_ekf/odom_combined
+    /agent2/mobile_base/commands/velocity
+    /agent2/mobile_base/sensors/imu_data
+
+    /bot1_stamped_cmds
+    /bot2_stamped_cmds
+
+    /opti_data
+    /opti_range
+
+    "
+
+  />
+
+  <node pkg="rosbag" type="record" name="rosbagger"
+        args="record -o $(arg savefile) $(arg bag_topics)"
+        if="$(arg create_bag)"
+  />
+
+
+</launch>

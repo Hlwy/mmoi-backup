@@ -1,0 +1,6 @@
+<launch>
+
+  <node pkg="sensors_simulator" name="gazebo_range" type="gazebo_range_sim" required="true" output="screen"/>
+  <node pkg="sensors_simulator" name="stamped_controls" type="controls_sim" required="true"/>
+
+</launch>

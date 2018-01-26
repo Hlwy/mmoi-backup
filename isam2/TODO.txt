@@ -1,0 +1,25 @@
+LAST UPDATED: 9/27/16
+
+
+===================================
+          HIGH PRIORITY
+===================================
+
+1) Finish de-centralized iSAM2 development in 'agent1_isam2_node.cpp'
+     i) use output file "results_agent1_isam2.csv" to check how path looks
+     ii) instead of using agent 2's odom data switch to using agent 2's current estimate retrieved from its own estimation process
+     iii) output estimates through ROS publisher
+     
+===================================
+          MEDIUM PRIORITY
+===================================
+
+1) Develop some standardized method for performance analysis
+
+===================================
+          LOW PRIORITY
+===================================
+
+1) Consolidate variable usage (i.e reduce # of variables declared, efficient variable usage)
+     i) odometry callback functions in 'isam2.cpp'
+2) Update all documentation on code

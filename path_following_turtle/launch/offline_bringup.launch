@@ -1,0 +1,51 @@
+<launch>
+  <arg name="use_gazebo" value="true" />
+  <arg name="use_2_agents" value="true" />
+
+  <arg name="bot1" value="agent1" />
+  <arg name="bot2" value="agent2" />
+
+  <arg name="x1" value="0.0" />
+  <arg name="y1" value="5.0" />
+  <arg name="x2" value="0.0" />
+  <arg name="y2" value="-5.0" />
+
+  <param name="bot1_name" value="$(arg bot1)"/>
+  <param name="bot2_name" value="$(arg bot2)"/>
+
+  <!-- NOTE: Commented values default to true -->
+  <!-- <arg name="spawn_gazebo_models" value="" /> -->
+  <!-- <arg name="use_gui" value=""/> -->
+  <!-- <arg name="use_sim_time" value=""/> -->
+
+
+  <!-- Bringup agents -->
+  <include file="$(find path_following_turtle)/launch/include/offline_agents.launch.xml" >
+    <arg name="use_2_agents" value="$(arg use_2_agents)" />
+    <arg name="spawn_model" value="true" />
+    <arg name="bot1_name" value="$(arg bot1)"/>
+    <arg name="bot2_name" value="$(arg bot2)"/>
+    <arg name="x1" value="$(arg x1)" />
+    <arg name="y1" value="$(arg y1)" />
+    <arg name="x2" value="$(arg x2)" />
+    <arg name="y2" value="$(arg y2)" />
+  </include>
+
+
+  <node name="bot1_cmds_pubber"
+        pkg="sensors_simulator"
+        type="agent1_controls_sim"
+        respawn="true" >
+        <!-- output="screen" > -->
+  </node>
+
+  <node name="bot2_cmds_pubber"
+        pkg="sensors_simulator"
+        type="agent2_controls_sim"
+        respawn="true">
+        <!-- output="screen" > -->
+  </node>
+
+  <node pkg="sensors_simulator" name="gazebo_range" type="gazebo_range_sim" required="true"/>
+
+</launch>

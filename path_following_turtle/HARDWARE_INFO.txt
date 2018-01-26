@@ -1,0 +1,5 @@
+Maximum translational velocity: 70 cm/s
+Maximum rotational velocity: 180 deg/s (>110 deg/s gyro performance will degrade)
+
+Odometry: 52 ticks/enc rev, 2578.33 ticks/wheel rev, 11.7 ticks/mm
+Gyro: factory calibrated, 1 axis (110 deg/s)

@@ -1,0 +1,107 @@
+<launch>
+     <arg name="robot_name" />
+     <arg name="robot_position"/>
+     <arg name="use_machine" />
+     <arg name="machine" if="$(arg use_machine)"/>
+     <arg name="spawn_model" default="false" />
+
+     <group ns="$(arg robot_name)">
+
+          <!-- Run nodes from a base station -->
+          <group if="$(arg use_machine)">
+
+               <!-- Initial Kobuki StartUp  -->
+               <include file="$(find path_following_turtle)/include/turtlebot_bringup/launch/minimal.launch">
+                    <arg name="robot_name" value="$(arg robot_name)" />
+                    <arg name="use_machine" value="$(arg use_machine)" />
+                    <arg name="machine" value="$(arg machine)"/>
+               </include>
+
+               <!-- Attach Velocity Smoother  -->
+               <node pkg="nodelet" type="nodelet" name="pid_vel_smoother" machine="$(arg machine)" args="load yocs_velocity_smoother/VelocitySmootherNodelet mobile_base_nodelet_manager">
+                    <rosparam file="$(find path_following_turtle)/param/pid_kobuki_smoother.yaml" command="load"/>
+                    <remap from="pid_vel_smoother/smooth_cmd_vel" to="cmd_vel_mux/input/teleop"/>
+                    <remap from="pid_smoother/odometry" to="odom"/>
+                    <remap from="pid_smoother/robot_cmd_vel" to="mobile_base/commands/velocity"/>
+               </node>
+
+               <!-- Attach Safety Controller  -->
+               <node pkg="nodelet" type="nodelet" name="kobuki_safety_controller" machine="$(arg machine)" args="load kobuki_safety_controller/SafetyControllerNodelet mobile_base_nodelet_manager">
+                    <remap from="kobuki_safety_controller/cmd_vel" to="cmd_vel_mux/safety_controller"/>
+                    <remap from="kobuki_safety_controller/events/bumper" to="mobile_base/events/bumper"/>
+                    <remap from="kobuki_safety_controller/events/cliff" to="mobile_base/events/cliff"/>
+                    <remap from="kobuki_safety_controller/events/wheel_drop" to="mobile_base/events/wheel_drop"/>
+               </node>
+
+               <!-- Attach EKF Pose Estimator for Odometry  -->
+               <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" machine="$(arg machine)">
+                    <remap from="imu_data" to="imu" />
+                    <param name="freq" value="200.0" />
+                    <param name="sensor_timeout" value="1.0" />
+                    <param name="publish_tf" value="true" />
+                    <param name="odom_used" value="true" />
+                    <param name="imu_used" value="true" />
+                    <param name="vo_used" value="false" />
+                    <param name="debug" value="false" />
+                    <param name="self_diagnose" value="false" />
+               </node>
+
+               <!-- Spawn Robot in Gazebo  -->
+               <node name="spawn_turtlebot_model" pkg="gazebo_ros" type="spawn_model" respawn="false"
+                    args=" -unpause -urdf -param robot_description -model $(arg robot_name) $(arg robot_position)"
+                    if="$(arg spawn_model)" machine="$(arg machine)" >
+               </node>
+          </group>
+
+          <!-- If we aren't operating from a base station, then run the nodes locally -->
+          <group unless="$(arg use_machine)" >
+
+               <!-- Initial Kobuki StartUp  -->
+               <include file="$(find turtlebot_bringup)/launch/minimal.launch">
+                    <arg name="robot_name" value="$(arg robot_name)" />
+               </include>
+
+               <!-- Attach Velocity Smoother  -->
+               <node pkg="nodelet" type="nodelet" name="pid_vel_smoother" args="load yocs_velocity_smoother/VelocitySmootherNodelet mobile_base_nodelet_manager">
+                    <rosparam file="$(find path_following_turtle)/param/pid_kobuki_smoother.yaml" command="load"/>
+                    <remap from="pid_vel_smoother/smooth_cmd_vel" to="cmd_vel_mux/input/teleop"/>
+                    <remap from="pid_smoother/odometry" to="odom"/>
+                    <remap from="pid_smoother/robot_cmd_vel" to="mobile_base/commands/velocity"/>
+               </node>
+
+               <!-- Attach Safety Controller  -->
+               <node pkg="nodelet" type="nodelet" name="kobuki_safety_controller" args="load kobuki_safety_controller/SafetyControllerNodelet mobile_base_nodelet_manager">
+                    <remap from="kobuki_safety_controller/cmd_vel" to="cmd_vel_mux/safety_controller"/>
+                    <remap from="kobuki_safety_controller/events/bumper" to="mobile_base/events/bumper"/>
+                    <remap from="kobuki_safety_controller/events/cliff" to="mobile_base/events/cliff"/>
+                    <remap from="kobuki_safety_controller/events/wheel_drop" to="mobile_base/events/wheel_drop"/>
+               </node>
+
+               <!-- Attach EKF Pose Estimator for Odometry  -->
+               <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+                    <remap from="imu_data" to="mobile_base/sensors/imu_data" />
+                    <!-- <remap from="odom" to="pr2_base_odometry/odom" /> -->
+                    <param name="output_frame" value="odom_combined"/>
+                    <param name="freq" value="50.0" />
+                    <param name="sensor_timeout" value="1.0" />
+                    <param name="publish_tf" value="true" />
+                    <param name="odom_used" value="true" />
+                    <param name="imu_used" value="true" />
+                    <param name="vo_used" value="false" />
+                    <param name="debug" value="false" />
+                    <param name="self_diagnose" value="false" />
+                    <!-- <param name="base_footprint_frame" value="base_footprint"/> -->
+               </node>
+
+               <!-- Spawn Robot in Gazebo  -->
+               <node name="spawn_turtlebot_model" pkg="gazebo_ros" type="spawn_model" respawn="false"
+                    args=" -unpause -urdf -param robot_description -model $(arg robot_name) $(arg robot_position)"
+                    if="$(arg spawn_model)">
+               </node>
+
+          </group>
+
+     </group>
+
+
+</launch>

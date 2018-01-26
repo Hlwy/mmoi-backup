@@ -1,0 +1,14 @@
+<launch>
+
+     <arg name="bot1_ip" default="turtlebot4" />
+     <arg name="bot2_ip" default="turtlebot6" />
+
+     <include file="$(find path_following_turtle)/launch/include/bringup_agent1.launch" >
+       <arg name="bot1_ip" value="$(arg bot1_ip)" />
+     </include>
+
+     <include file="$(find path_following_turtle)/launch/include/bringup_agent2.launch" >
+       <arg name="bot2_ip" value="$(arg bot2_ip)" />
+     </include>
+
+</launch>

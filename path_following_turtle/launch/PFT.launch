@@ -1,0 +1,12 @@
+<launch>
+
+  <!-- Run the path following algorithms on the agents -->
+  <node name="PFT_1" pkg="path_following_turtle" type="opti_agent1_straight_line"
+    output="screen" >
+  </node>
+
+  <node name="PFT_2" pkg="path_following_turtle" type="opti_agent2_straight_line"
+    output="screen" >
+  </node>
+
+</launch>

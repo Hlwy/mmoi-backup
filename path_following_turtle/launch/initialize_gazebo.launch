@@ -1,0 +1,54 @@
+<launch>
+
+     <env name="ROS_MASTER_URI" value="http://192.168.1.5:11311"/>
+
+     <arg name="spawn_model" value="true" />
+     <arg name="use_machine" default="true" />
+
+     <!-- AGENT 1 CONFIGURATION -->
+     <arg name="bot1_name" value="agent1"/>
+     <param name="bot1_name" value="$(arg bot1_name)"/>
+
+     <arg name="x1" value="0.0" />
+     <arg name="y1" value="5.0" />
+
+     <!-- AGENT 2 CONFIGURATION -->
+     <arg name="bot2_name" value="agent2"/>
+     <param name="bot2_name" value="$(arg bot2_name)"/>
+
+     <arg name="x2" value="0.0" />
+     <arg name="y2" value="-5.0" />
+
+     <!-- MACHINE SETUP -->
+     <arg name="machine1_name" value="Agent1"/>
+     <arg name="machine2_name" value="Agent2"/>
+     <arg name="bot1_ip" value="192.168.1.2" />
+     <arg name="bot2_ip" value="192.168.1.2" />
+
+     <machine name="$(arg machine1_name)" address="$(arg bot1_ip)" user="turtlebot" password="turtlebot"
+              env-loader="~/the_hunting_ground/src/path_following_turtle/turtle_env.sh" default="true" />
+
+     <machine name="$(arg machine2_name)" address="$(arg bot2_ip)" user="turtlebot" password="turtlebot"
+              env-loader="~/the_hunting_ground/src/path_following_turtle/turtle_env.sh" default="true" />
+
+     <!-- AGENT 1 Bringup -->
+     <include file="$(find path_following_turtle)/launch/include/online_agent_bringup.launch.xml">
+          <arg name="bot_name" value="$(arg bot1_name)" />
+          <arg name="machine" value="$(arg machine1_name)" />
+          <arg name="use_machine" value="$(arg use_machine)" />
+          <arg name="spawn_model" value="$(arg spawn_model)" />
+          <arg name="x" value="$(arg x1)"/>
+          <arg name="y" value="$(arg y1)"/>
+     </include>
+
+     <!-- AGENT 2 Bringup -->
+     <include file="$(find path_following_turtle)/launch/include/online_agent_bringup.launch.xml">
+          <arg name="bot_name" value="$(arg bot2_name)" />
+          <arg name="machine" value="$(arg machine2_name)"/>
+          <arg name="use_machine" value="$(arg use_machine)" />
+          <arg name="spawn_model" value="$(arg spawn_model)" />
+          <arg name="x" value="$(arg x2)"/>
+          <arg name="y" value="$(arg y2)"/>
+     </include>
+
+</launch>

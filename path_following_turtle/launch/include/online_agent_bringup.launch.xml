@@ -1,0 +1,19 @@
+<launch>
+     <arg name="bot_name" />
+     <arg name="machine" />
+     <arg name="use_machine" default="true" />
+     <arg name="spawn_model" default="false" />
+     <arg name="x" />
+     <arg name="y" />
+
+     <!--    Start Up Agent  -->
+     <include file="$(find path_following_turtle)/launch/include/kobuki.launch.xml">
+          <arg name="robot_name" value="$(arg bot_name)" />
+          <arg name="spawn_model" value="$(arg spawn_model)" />
+          <arg name="robot_position" value="-x $(arg x) -y $(arg y)" />
+          <arg name="use_machine" value="$(arg use_machine)" />
+          <arg name="machine" value="$(arg machine)" />
+     </include>
+
+
+</launch>

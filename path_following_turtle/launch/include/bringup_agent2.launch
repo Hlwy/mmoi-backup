@@ -1,0 +1,37 @@
+<launch>
+  <arg name="bot2_name" value="agent2"/>
+  <arg name="spawn_model" value="false" />
+  <arg name="x2" value="0.0" />
+  <arg name="y2" value="-5.0" />
+
+  <param name="bot2_name" value="$(arg bot2_name)"/>
+  <arg name="bot2_ip" default="turtlebot5" />
+
+  <machine name="Agent2" user="turtlebot" address="$(arg bot2_ip)" password="turtlebot"
+    env-loader="~/the_hunting_ground/src/path_following_turtle/turtle_env.sh" default="true" />
+
+  <!--    Start Up Agent 2  -->
+  <include file="$(find path_following_turtle)/launch/include/kobuki.launch.xml">
+    <arg name="robot_name" value="$(arg bot2_name)" />
+    <arg name="spawn_model" value="$(arg spawn_model)" />
+    <arg name="robot_position" value="-x $(arg x2) -y $(arg y2)" />
+    <arg name="use_machine" value="true" />
+    <arg name="machine" value="Agent2" />
+    <!--   If robot isn't being spawned, robot_position is optional    -->
+  </include>
+
+  <!-- Retrieve Gazebo states for agents -->
+  <!-- <node name="agent2_state_pubber"
+        pkg="path_following_turtle"
+        type="agent2_state_server"
+        respawn="true" >
+  </node> -->
+
+  <node name="bot2_cmds_pubber"
+        pkg="sensors_simulator"
+        type="agent2_controls_sim"
+        respawn="true">
+        <!-- output="screen" > -->
+  </node>
+
+</launch>
